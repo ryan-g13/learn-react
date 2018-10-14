@@ -1,25 +1,20 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 
 class App extends Component {
   render() {
+
+    let message = {
+    message: 'Hallo, Wilkommen zu meine React App!',
+    userName: 'MonsieurFluffNStuff',
+    psw: true,
+  }
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+        <h1>{message.message}</h1>
+        <p>Wilkommen {message.userName}, haben Sie eine Guten Tag</p>
+        <p> Your password is {message.psw}</p>
       </div>
     );
   }
