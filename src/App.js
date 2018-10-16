@@ -30,7 +30,15 @@ class App extends Component {
         psw: true,
       },
     }
-  }
+    this.onDismiss = this.onDismiss.bind(this);
+
+    }
+    onDismiss(id) {
+      const updatedList = this.state.list.filter(element => {
+        return element.objectId !== id;
+      })
+      this.setState({ list: updatedList });
+    }
   render() {
 
     return (
@@ -44,6 +52,12 @@ class App extends Component {
             <span> Author: {element.author}</span>
             <span> Comments: {element.num_comments}</span>
             <span> Points: {element.points} </span>
+            <span> 
+              <button
+                onClick={() => this.onDismiss(element.objectId)}
+              > Mark as Read
+              </button>
+            </span>
             </li>
           })}
         </ul>
