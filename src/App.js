@@ -6,6 +6,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      termSearched: '',
       list: [ 
         {
           title: 'REACT',
@@ -31,22 +32,42 @@ class App extends Component {
       },
     }
     this.onDismiss = this.onDismiss.bind(this);
+    this.onSearchFieldChange = this.onSearchFieldChange.bind(this);
 
     }
+    // +------------------------------------------------------------------------------------------+
+    // Methods 
+    // +------------------------------------------------------------------------------------------+
     onDismiss(id) {
       const updatedList = this.state.list.filter(element => {
         return element.objectId !== id;
       })
       this.setState({ list: updatedList });
     }
-  render() {
 
+    onSearchFieldChange(event) {
+      this.setState({ termSearched: event.target.value })
+    }
+    
+    // +------------------------------------------------------------------------------------------+
+    // Rendering Application component to DOM 
+    // +------------------------------------------------------------------------------------------+
+  render() {
     return (
       <div className="App">
         <h1>{this.state.message.greeting}</h1>
         <p>Wilkommen {this.state.message.userName}, haben Sie eine Guten Tag</p>
+        <form>
+          <input type='text' 
+            onChange={this.onSearchFieldChange}
+          />
+        </form>
         <ul>
-          {this.state.list.map(element => {
+          {this.state.list.filter(isSearched(this.state.termSearched)
+            // item => 
+            // this.state.termSearched === '' ? item : item.title.toLowerCase() === this.state.termSearched.toLowerCase()
+
+            ).map(element => {
             return <li key={element.objectId}>
             <span>Title: <a href={element.url}>{element.title}</a></span>
             <span> Author: {element.author}</span>
@@ -65,5 +86,9 @@ class App extends Component {
     );
   }
 }
+
+const isSearched = termSearched => item => {
+    return item.title.toLowerCase().includes(termSearched.toLowerCase());
+  }
 
 export default App;
