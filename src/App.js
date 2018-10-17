@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
+// import Search from './search';
+// import Table from './table';
 import './App.css';
 
 class App extends Component {
@@ -53,34 +55,75 @@ class App extends Component {
     // Rendering Application component to DOM 
     // +------------------------------------------------------------------------------------------+
   render() {
+    const { message, list, termSearched } = this.state;
     return (
       <div className="App">
-        <h1>{this.state.message.greeting}</h1>
-        <p>Wilkommen {this.state.message.userName}, haben Sie eine Guten Tag</p>
-        <form>
-          <input type='text' 
-            onChange={this.onSearchFieldChange}
-          />
-        </form>
-        <ul>
-          {this.state.list.filter(isSearched(this.state.termSearched)
-            // item => 
-            // this.state.termSearched === '' ? item : item.title.toLowerCase() === this.state.termSearched.toLowerCase()
+       <Message 
+        content={message}
+       />
+       <Search 
+          value={termSearched}
+          onChange={this.onSearchFieldChange}
+        />
+        <Table 
+          list={list}
+          pattern={termSearched}
+          onDismiss={this.onDismiss}
+        />
+      </div>
+    );
+  }
+}
 
-            ).map(element => {
-            return <li key={element.objectId}>
-            <span>Title: <a href={element.url}>{element.title}</a></span>
-            <span> Author: {element.author}</span>
-            <span> Comments: {element.num_comments}</span>
-            <span> Points: {element.points} </span>
-            <span> 
-              <button
-                onClick={() => this.onDismiss(element.objectId)}
-              > Mark as Read
-              </button>
-            </span>
-            </li>
-          })}
+class Message extends React.Component {
+  render() {
+    const { content } = this.props;
+    return(
+      <div className='message' >
+        <h1>{content.greeting}</h1>
+        <p>Wilkommen {content.userName}, haben Sie eine Guten Tag</p> 
+      </div>
+    );
+  }
+}
+
+class Search extends React.Component {
+  render() {
+    const { value, onChange } = this.props;
+    return( 
+      <form>
+        <input 
+          type='text'
+          value={value}
+          onChange={onChange} 
+        />
+      </form>
+    )
+  }
+}
+
+class Table extends React.Component {
+  render() {
+    const {pattern, list, onDismiss } = this.props;
+    return (
+      <div className='table'>
+        <h2>Results</h2>
+        <ul>
+          {list.filter(isSearched(pattern)
+          ).map(element => {
+              return <li key={element.objectId}>
+              <span>Title: <a href={element.url}>{element.title}</a></span>
+              <span> Author: {element.author}</span>
+              <span> Comments: {element.num_comments}</span>
+              <span> Points: {element.points} </span>
+              <span> 
+                <button
+                  onClick={() => this.onDismiss(element.objectId)}
+                > Mark as Read
+                </button>
+              </span>
+              </li>
+            })}
         </ul>
       </div>
     );
