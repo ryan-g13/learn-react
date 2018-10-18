@@ -56,23 +56,24 @@ class App extends Component {
     // +------------------------------------------------------------------------------------------+
   render() {
     const { message, list, termSearched } = this.state;
-    console.log(this.props);
     return (
-      <div className="App">
-       <Message 
-        content={message}
-       />
-       <Search 
-          value={termSearched}
-          onChange={this.onSearchFieldChange} 
-        >
-        Enter your search term
-        </Search>
-        <Table 
-          list={list}
-          pattern={termSearched}
-          onDismiss={this.onDismiss}
-        />
+      <div className="page">
+        <div className="interactions" >
+          <Message 
+            content={message}
+          />
+          <Search 
+              value={termSearched}
+              onChange={this.onSearchFieldChange} 
+            >
+            Enter your search term
+          </Search>
+        </div>
+          <Table 
+            list={list}
+            pattern={termSearched}
+            onDismiss={this.onDismiss}
+          />
       </div>
     );
   }
@@ -90,20 +91,20 @@ class Message extends React.Component {
   }
 }
 
-class Search extends React.Component {
-  render() {
-    const { value, onChange, children } = this.props;
-    return( 
-      <form>
-        {children} <input 
-          type='text'
-          value={value}
-          onChange={onChange} 
-        />
-      </form>
-    )
-  }
-}
+// class Search extends React.Component {
+//   render() {
+//     const { value, onChange, children } = this.props;
+//     return( 
+//       <form>
+//         {children} <input 
+//           type='text'
+//           value={value}
+//           onChange={onChange} 
+//         />
+//       </form>
+//     )
+//   }
+// }
 
 class Table extends React.Component {
   render() {
@@ -111,23 +112,22 @@ class Table extends React.Component {
     return (
       <div className='table'>
         <h2>Results</h2>
-        <ul>
-          {list.filter(isSearched(pattern)
-          ).map(element => {
-              return <li key={element.objectId}>
-              <span>Title: <a href={element.url}>{element.title}</a></span>
-              <span> Author: {element.author}</span>
-              <span> Comments: {element.num_comments}</span>
-              <span> Points: {element.points} </span>
-              <span> 
-                <Button
-                  onClick={() => this.onDismiss(element.objectId)}
-                > Mark as Read
-                </Button>
-              </span>
-              </li>
-            })}
-        </ul>
+        {list.filter(isSearched(pattern)
+        ).map(element => {
+            return <div key={element.objectId} className='table-row'>
+            <span style={{ width: '35%' }} > Title: <a href={element.url}>{element.title}</a></span>
+            <span style={{ width: '30%' }} > Author: {element.author}</span>
+            <span style={{ width: '10%' }} > Comments: {element.num_comments}</span>
+            <span style={{ width: '10%' }} > Points: {element.points} </span>
+            <span style={{ width: '10%' }} > 
+              <Button
+                onClick={() => onDismiss(element.objectId)}
+                // className='button-inline' // not sure about this class
+              > Mark as Read
+              </Button>
+            </span>
+            </div>
+          })}
       </div>
     );
   }
@@ -150,6 +150,19 @@ class Button extends React.Component {
       </button>
     );
   }
+}
+
+const Search = ({value, onChange, children }) => {
+  return(
+    <form>
+      { children } 
+      <input 
+        type='text'
+        value={value}
+        onChange={onChange}
+      />
+    </form>
+  )
 }
 
 const isSearched = termSearched => item => {

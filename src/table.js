@@ -1,11 +1,11 @@
-import React, {Component } from 'react';
+import React, { Component } from 'react';
 
 export default class Table extends React.Component {
   render() {
     const { list, pattern, onDismiss, isSearched } = this.props;
     return (
       <div className='table'>
-        <p>Hola</p>
+        <p className='table-header'>Hola</p>
         <ul>
           {list.filter(isSearched(pattern)
           ).map(element => {
