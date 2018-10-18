@@ -56,6 +56,7 @@ class App extends Component {
     // +------------------------------------------------------------------------------------------+
   render() {
     const { message, list, termSearched } = this.state;
+    console.log(this.props);
     return (
       <div className="App">
        <Message 
@@ -63,8 +64,10 @@ class App extends Component {
        />
        <Search 
           value={termSearched}
-          onChange={this.onSearchFieldChange}
-        />
+          onChange={this.onSearchFieldChange} 
+        >
+        Enter your search term
+        </Search>
         <Table 
           list={list}
           pattern={termSearched}
@@ -89,10 +92,10 @@ class Message extends React.Component {
 
 class Search extends React.Component {
   render() {
-    const { value, onChange } = this.props;
+    const { value, onChange, children } = this.props;
     return( 
       <form>
-        <input 
+        {children} <input 
           type='text'
           value={value}
           onChange={onChange} 
@@ -117,15 +120,34 @@ class Table extends React.Component {
               <span> Comments: {element.num_comments}</span>
               <span> Points: {element.points} </span>
               <span> 
-                <button
+                <Button
                   onClick={() => this.onDismiss(element.objectId)}
                 > Mark as Read
-                </button>
+                </Button>
               </span>
               </li>
             })}
         </ul>
       </div>
+    );
+  }
+}
+
+class Button extends React.Component {
+  render() {
+    const {
+      onClick, 
+      className = '',
+      children
+    } = this.props;
+    return(
+      <button 
+        className={className}
+        onClick={onClick}
+        type="button"
+      > 
+      {children}
+      </button>
     );
   }
 }

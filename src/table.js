@@ -2,11 +2,12 @@ import React, {Component } from 'react';
 
 export default class Table extends React.Component {
   render() {
+    const { list, pattern, onDismiss, isSearched } = this.props;
     return (
       <div className='table'>
         <p>Hola</p>
         <ul>
-          {list.filter(isSearched(termSearched)
+          {list.filter(isSearched(pattern)
           ).map(element => {
                   return <li key={element.objectId}>
                   <span>Title: <a href={element.url}>{element.title}</a></span>
