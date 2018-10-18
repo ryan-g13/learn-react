@@ -79,32 +79,15 @@ class App extends Component {
   }
 }
 
-class Message extends React.Component {
-  render() {
-    const { content } = this.props;
-    return(
-      <div className='message' >
-        <h1>{content.greeting}</h1>
-        <p>Wilkommen {content.userName}, haben Sie eine Guten Tag</p> 
-      </div>
-    );
-  }
+const Message = ({ content }) => {
+  return(
+    <div className='message' >
+      <h1>{content.greeting}</h1>
+      <p>Wilkommen {content.userName}, haben Sie eine Guten Tag</p> 
+    </div>
+  )
 }
 
-// class Search extends React.Component {
-//   render() {
-//     const { value, onChange, children } = this.props;
-//     return( 
-//       <form>
-//         {children} <input 
-//           type='text'
-//           value={value}
-//           onChange={onChange} 
-//         />
-//       </form>
-//     )
-//   }
-// }
 
 class Table extends React.Component {
   render() {
@@ -133,23 +116,16 @@ class Table extends React.Component {
   }
 }
 
-class Button extends React.Component {
-  render() {
-    const {
-      onClick, 
-      className = '',
-      children
-    } = this.props;
-    return(
-      <button 
+const Button = ({ onClick, className, children }) => {
+  return(
+    <button 
         className={className}
         onClick={onClick}
         type="button"
       > 
       {children}
       </button>
-    );
-  }
+  );
 }
 
 const Search = ({value, onChange, children }) => {
