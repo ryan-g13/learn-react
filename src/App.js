@@ -19,7 +19,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      results: null,
+      result: null,
       termSearched: DEFAULT_QUERY,
       // list: [ 
       //   {
@@ -54,24 +54,27 @@ class App extends Component {
     // Methods 
     // +------------------------------------------------------------------------------------------+
     onDismiss(id) {
-      const updatedList = this.state.list.filter(element => {
-        return element.objectId !== id;
-      })
-      this.setState({ list: updatedList });
+      const updatedList = element => element.objectID !== id;
+      const updatedHits = this.state.result.hits.filter(updatedList);
+      // this.setState({ result: Object.assign( {}, this.state.result, {hits: updatedHits })
+      //});
+      this.setState({ 
+        result: { ...updatedHits, hits: updatedHits }
+      });
     }
 
     onSearchFieldChange(event) {
       this.setState({ termSearched: event.target.value })
     }
     
-    setSearchTopStories(results) {
-      this.setState({ results });
+    setSearchTopStories(result) {
+      this.setState({ result });
     }
 
     componentDidMount() {
       const { termSearched } = this.state;
 
-      fetch(url)
+      fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${termSearched}`)
         .then(response => response.json())
         .then(data => this.setSearchTopStories(data))
         .catch(error => error);
@@ -80,9 +83,9 @@ class App extends Component {
     // Rendering Application component to DOM 
     // +------------------------------------------------------------------------------------------+
   render() {
-    const { message, results, termSearched } = this.state;
+    const { message, result, termSearched } = this.state;
 
-    if(!results) { return null; }
+    if(!result) { return null; }
 
     return (
       <div className="page">
@@ -99,7 +102,7 @@ class App extends Component {
         </div>
           <Table 
             // list={list}
-            list={results.hits}
+            list={result.hits}
             pattern={termSearched}
             onDismiss={this.onDismiss}
           />
@@ -126,14 +129,14 @@ class Table extends React.Component {
         <h2>Results</h2>
         {list.filter(isSearched(pattern)
         ).map(element => {
-            return <div key={element.objectId} className='table-row'>
+            return <div key={element.objectID} className='table-row'>
             <span style={{ width: '35%' }} > Title: <a href={element.url}>{element.title}</a></span>
             <span style={{ width: '30%' }} > Author: {element.author}</span>
             <span style={{ width: '10%' }} > Comments: {element.num_comments}</span>
             <span style={{ width: '10%' }} > Points: {element.points} </span>
             <span style={{ width: '10%' }} > 
               <Button
-                onClick={() => onDismiss(element.objectId)}
+                onClick={() => onDismiss(element.objectID)}
                 // className='button-inline' // not sure about this class
               > Mark as Read
               </Button>
