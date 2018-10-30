@@ -1,38 +1,51 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
-// import Search from './search';
-// import Table from './table';
+// import Search from './Search';
+// import Table from './Table';
+// import Button from './Button';
+// import Message from './Message';
+
 import './App.css';
+
+const DEFAULT_QUERY = 'redux';
+
+const PATH_BASE = 'https://hn.algolia.com/api/v1';
+const PATH_SEARCH = '/search';
+const PARAM_SEARCH = 'query=';
+
+const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      termSearched: '',
-      list: [ 
-        {
-          title: 'REACT',
-          url: 'https://facebook.github.io/react/',
-          author: 'Jimmay',
-          num_comments: 3,
-          points: 7,
-          objectId: 0,
-        },
-        {
-          title: 'REDUX',
-          url: 'https://github.com/reactjs/redux',
-          author: 'Danjamin',
-          num_comments: 1,
-          points: 5,
-          objectId: 1,
-        }
-      ],
+      results: null,
+      termSearched: DEFAULT_QUERY,
+      // list: [ 
+      //   {
+      //     title: 'REACT',
+      //     url: 'https://facebook.github.io/react/',
+      //     author: 'Jimmay',
+      //     num_comments: 3,
+      //     points: 7,
+      //     objectId: 0,
+      //   },
+      //   {
+      //     title: 'REDUX',
+      //     url: 'https://github.com/reactjs/redux',
+      //     author: 'Danjamin',
+      //     num_comments: 1,
+      //     points: 5,
+      //     objectId: 1,
+      //   }
+      // ],
       message: {
         greeting: 'Hallo, Wilkommen zu meine React App!',
         userName: 'MonsieurFluffNStuff',
         psw: true,
       },
     }
+    this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchFieldChange = this.onSearchFieldChange.bind(this);
 
@@ -51,11 +64,26 @@ class App extends Component {
       this.setState({ termSearched: event.target.value })
     }
     
+    setSearchTopStories(results) {
+      this.setState({ results });
+    }
+
+    componentDidMount() {
+      const { termSearched } = this.state;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => this.setSearchTopStories(data))
+        .catch(error => error);
+    }
     // +------------------------------------------------------------------------------------------+
     // Rendering Application component to DOM 
     // +------------------------------------------------------------------------------------------+
   render() {
-    const { message, list, termSearched } = this.state;
+    const { message, results, termSearched } = this.state;
+
+    if(!results) { return null; }
+
     return (
       <div className="page">
         <div className="interactions" >
@@ -70,7 +98,8 @@ class App extends Component {
           </Search>
         </div>
           <Table 
-            list={list}
+            // list={list}
+            list={results.hits}
             pattern={termSearched}
             onDismiss={this.onDismiss}
           />
