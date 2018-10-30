@@ -13,7 +13,7 @@ const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
 
-const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
+// const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
 
 class App extends Component {
   constructor(props) {
@@ -21,24 +21,6 @@ class App extends Component {
     this.state = {
       result: null,
       termSearched: DEFAULT_QUERY,
-      // list: [ 
-      //   {
-      //     title: 'REACT',
-      //     url: 'https://facebook.github.io/react/',
-      //     author: 'Jimmay',
-      //     num_comments: 3,
-      //     points: 7,
-      //     objectId: 0,
-      //   },
-      //   {
-      //     title: 'REDUX',
-      //     url: 'https://github.com/reactjs/redux',
-      //     author: 'Danjamin',
-      //     num_comments: 1,
-      //     points: 5,
-      //     objectId: 1,
-      //   }
-      // ],
       message: {
         greeting: 'Hallo, Wilkommen zu meine React App!',
         userName: 'MonsieurFluffNStuff',
@@ -57,7 +39,7 @@ class App extends Component {
       const updatedList = element => element.objectID !== id;
       const updatedHits = this.state.result.hits.filter(updatedList);
       // this.setState({ result: Object.assign( {}, this.state.result, {hits: updatedHits })
-      //});
+      //}); // replaced by the below code 
       this.setState({ 
         result: { ...updatedHits, hits: updatedHits }
       });
@@ -85,8 +67,6 @@ class App extends Component {
   render() {
     const { message, result, termSearched } = this.state;
 
-    if(!result) { return null; }
-
     return (
       <div className="page">
         <div className="interactions" >
@@ -100,12 +80,12 @@ class App extends Component {
             Enter your search term
           </Search>
         </div>
-          <Table 
-            // list={list}
+          { result ? <Table 
             list={result.hits}
             pattern={termSearched}
             onDismiss={this.onDismiss}
-          />
+          /> 
+          : null }
       </div>
     );
   }
