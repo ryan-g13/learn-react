@@ -8,13 +8,15 @@ import React, { Component } from 'react';
 import './App.css';
 
 const DEFAULT_QUERY = 'redux';
+const DEFAULT_HPP = 25;
 
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
 const PARAM_PAGE = 'page='
+const PARAM_HPP = 'hitsPerPage='
 
-// const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}&${PARAM_PAGE}${page}`;
+// const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`;
 
 class App extends Component {
   constructor(props) {
@@ -72,7 +74,7 @@ class App extends Component {
     }
 
     fetchSearchTopStories(termSearched, page = 0) {
-      fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${termSearched}&${PARAM_PAGE}${page}`)
+      fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${termSearched}&${PARAM_PAGE}${page}&${PARAM_HPP}${DEFAULT_HPP}`)
         .then(response => response.json())
         .then(data => this.setSearchTopStories(data))
         .catch(error => error);
