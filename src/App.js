@@ -27,10 +27,11 @@ class App extends Component {
         psw: true,
       },
     }
+    this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.setSearchTopStories = this.setSearchTopStories.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
     this.onSearchFieldChange = this.onSearchFieldChange.bind(this);
-
+    this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     }
     // +------------------------------------------------------------------------------------------+
     // Methods 
@@ -48,6 +49,12 @@ class App extends Component {
     onSearchFieldChange(event) {
       this.setState({ termSearched: event.target.value })
     }
+
+    onSearchSubmit(event) {
+      const { termSearched } = this.state;
+      this.fetchSearchTopStories(termSearched);
+      event.preventDefault();
+    }
     
     setSearchTopStories(result) {
       this.setState({ result });
@@ -55,12 +62,16 @@ class App extends Component {
 
     componentDidMount() {
       const { termSearched } = this.state;
+      this.fetchSearchTopStories(termSearched);
+    }
 
+    fetchSearchTopStories(termSearched) {
       fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${termSearched}`)
         .then(response => response.json())
         .then(data => this.setSearchTopStories(data))
         .catch(error => error);
     }
+
     // +------------------------------------------------------------------------------------------+
     // Rendering Application component to DOM 
     // +------------------------------------------------------------------------------------------+
@@ -76,13 +87,14 @@ class App extends Component {
           <Search 
               value={termSearched}
               onChange={this.onSearchFieldChange} 
+              onSubmit={this.onSearchSubmit}
             >
             Enter your search term
           </Search>
         </div>
           { result ? <Table 
             list={result.hits}
-            pattern={termSearched}
+            // pattern={termSearched}
             onDismiss={this.onDismiss}
           /> 
           : null }
@@ -103,12 +115,11 @@ const Message = ({ content }) => {
 
 class Table extends React.Component {
   render() {
-    const {pattern, list, onDismiss } = this.props;
+    const { list, onDismiss } = this.props;
     return (
       <div className='table'>
         <h2>Results</h2>
-        {list.filter(isSearched(pattern)
-        ).map(element => {
+          { list.map(element => {
             return <div key={element.objectID} className='table-row'>
             <span style={{ width: '35%' }} > Title: <a href={element.url}>{element.title}</a></span>
             <span style={{ width: '30%' }} > Author: {element.author}</span>
@@ -140,21 +151,21 @@ const Button = ({ onClick, className, children }) => {
   );
 }
 
-const Search = ({value, onChange, children }) => {
-  return(
-    <form>
+const Search = ({value, onChange, children, onSubmit }) => 
+    <form onSubmit={onSubmit}>
       { children } 
       <input 
         type='text'
         value={value}
         onChange={onChange}
       />
+      <button type="submit">
+        { children }
+      </button>
     </form>
-  )
-}
 
-const isSearched = termSearched => item => {
-    return item.title.toLowerCase().includes(termSearched.toLowerCase());
-  }
+// const isSearched = termSearched => item => {
+//     return item.title.toLowerCase().includes(termSearched.toLowerCase());
+//   }
 
 export default App;
