@@ -12,8 +12,9 @@ const DEFAULT_QUERY = 'redux';
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
+const PARAM_PAGE = 'page='
 
-// const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}`;
+// const url = `${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${DEFAULT_QUERY}&${PARAM_PAGE}${page}`;
 
 class App extends Component {
   constructor(props) {
@@ -33,14 +34,13 @@ class App extends Component {
     this.onSearchFieldChange = this.onSearchFieldChange.bind(this);
     this.fetchSearchTopStories = this.fetchSearchTopStories.bind(this);
     }
+
     // +------------------------------------------------------------------------------------------+
     // Methods 
     // +------------------------------------------------------------------------------------------+
     onDismiss(id) {
       const updatedList = element => element.objectID !== id;
       const updatedHits = this.state.result.hits.filter(updatedList);
-      // this.setState({ result: Object.assign( {}, this.state.result, {hits: updatedHits })
-      //}); // replaced by the below code 
       this.setState({ 
         result: { ...updatedHits, hits: updatedHits }
       });
@@ -57,7 +57,13 @@ class App extends Component {
     }
     
     setSearchTopStories(result) {
-      this.setState({ result });
+      const { hits, page } = result;
+      const previousHits = page !== 0 ? this.state.result.hits : [];
+      const updatedHits = [...previousHits, ...hits];
+      
+      this.setState({ 
+        result: { hits: updatedHits, page } 
+      });
     }
 
     componentDidMount() {
@@ -65,8 +71,8 @@ class App extends Component {
       this.fetchSearchTopStories(termSearched);
     }
 
-    fetchSearchTopStories(termSearched) {
-      fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${termSearched}`)
+    fetchSearchTopStories(termSearched, page = 0) {
+      fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${termSearched}&${PARAM_PAGE}${page}`)
         .then(response => response.json())
         .then(data => this.setSearchTopStories(data))
         .catch(error => error);
@@ -77,6 +83,7 @@ class App extends Component {
     // +------------------------------------------------------------------------------------------+
   render() {
     const { message, result, termSearched } = this.state;
+    const page = (result && result.page) || 0;
 
     return (
       <div className="page">
@@ -98,10 +105,19 @@ class App extends Component {
             onDismiss={this.onDismiss}
           /> 
           : null }
+          <div className="interactions" >
+            <button onClick={() =>  this.fetchSearchTopStories(termSearched, page + 1) }>
+              More
+            </button>
+          </div>
       </div>
     );
   }
 }
+
+// +------------------------------------------------------------------------------------------+
+// Components both Class extensions and functional components(stateless) 
+// +------------------------------------------------------------------------------------------+
 
 const Message = ({ content }) => {
   return(
@@ -111,7 +127,6 @@ const Message = ({ content }) => {
     </div>
   )
 }
-
 
 class Table extends React.Component {
   render() {
@@ -128,7 +143,6 @@ class Table extends React.Component {
             <span style={{ width: '10%' }} > 
               <Button
                 onClick={() => onDismiss(element.objectID)}
-                // className='button-inline' // not sure about this class
               > Mark as Read
               </Button>
             </span>
@@ -163,9 +177,5 @@ const Search = ({value, onChange, children, onSubmit }) =>
         { children }
       </button>
     </form>
-
-// const isSearched = termSearched => item => {
-//     return item.title.toLowerCase().includes(termSearched.toLowerCase());
-//   }
 
 export default App;
