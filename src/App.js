@@ -22,6 +22,7 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      error: null,
       results: null,
       searchKey: '',
       termSearched: DEFAULT_QUERY,
